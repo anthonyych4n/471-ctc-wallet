@@ -61,7 +61,28 @@ const config = {
   				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  			},
+
+			// CTC colour set
+
+			ctcColourSet: {
+				// pastel colour set
+
+				bubblegum: '#FFD2DC',
+				peach: '#FFD7C5',
+				seafoam: '#BAFBE4',
+				lavender: '#A689FF',
+
+				// vibrant colour set
+				redVib: '#FF4d6F',
+				orangeVib: '#FF6B54',
+				greenVib: '#00D3A9',
+				prupleVib: '#7055FD'
+			}
+
+
+
+
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
