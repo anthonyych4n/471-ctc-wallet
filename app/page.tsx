@@ -39,13 +39,24 @@ export default async function Home() {
           </div>
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-10 text-center space-x-4">
           <a
             href="/dashboard"
-            className="inline-block px-6 py-3 bg-ctcColourSet-lavender text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
+            className="inline-block px-6 py-3 bg-ctcColourSet-lavender text-white font-semibold rounded-lg shadow hover:bg-ctcColourSet-purpleVib transition"
           >
-            Go to Dashboard
+            Go to  User Dashboard
           </a>
+
+          {/* button for admin dashboard */}
+          <a
+            href="/admin"
+            className="inline-block px-6 py-3 bg-ctcColourSet-lavender text-white font-semibold rounded-lg shadow hover:bg-ctcColourSet-purpleVib transition ml-4"
+            >
+            Go to Admin Dashboard
+          </a>
+
+
+
         </div>
       </div>
     </main>      
