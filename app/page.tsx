@@ -10,7 +10,7 @@ export default async function Home() {
       <Header></Header>
     <main className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
       {/* Main Title Outside the Box */}
-      <h1 className="text-5xl font-extrabold text-purpleVib mb-8 mt-6 text-center drop-shadow-sm">
+      <h1 className="text-5xl font-extrabold text-ctcColourSet-purpleVib mb-8 mt-6 text-center drop-shadow-sm">
         CTC Wallet 
       </h1>
 
@@ -21,19 +21,19 @@ export default async function Home() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-blue-50 p-4 rounded-xl shadow hover:shadow-md transition">
-            <h2 className="text-xl font-semibold text-blue-700">Track Expenses</h2>
+          <div className="bg-ctcColourSet-seafoam p-4 rounded-xl shadow hover:shadow-md transition">
+            <h2 className="text-xl font-semibold text-ctcColourSet-greenVib">Track Expenses</h2>
             <p className="text-gray-600 mt-2">Add, view, and categorize your expenses in one place.</p>
           </div>
-          <div className="bg-green-50 p-4 rounded-xl shadow hover:shadow-md transition">
-            <h2 className="text-xl font-semibold text-green-700">View Analytics</h2>
+          <div className="bg-ctcColourSet-bubblegum p-4 rounded-xl shadow hover:shadow-md transition">
+            <h2 className="text-xl font-semibold text-ctcColourSet-redVib">View Analytics</h2>
             <p className="text-gray-600 mt-2">Visualize your income vs. expenses over time.</p>
           </div>
-          <div className="bg-yellow-50 p-4 rounded-xl shadow hover:shadow-md transition">
-            <h2 className="text-xl font-semibold text-yellow-700">Budget Planning</h2>
+          <div className="bg-ctcColourSet-peach p-4 rounded-xl shadow hover:shadow-md transition">
+            <h2 className="text-xl font-semibold text-ctcColourSet-orangeVib">Budget Planning</h2>
             <p className="text-gray-600 mt-2">Set monthly budgets and track how you’re doing.</p>
           </div>
-          <div className="bg-purple-50 p-4 rounded-xl shadow hover:shadow-md transition">
+          <div className="bg-ctcColourSet-lavender p-4 rounded-xl shadow hover:shadow-md transition">
             <h2 className="text-xl font-semibold text-purple-700">Secure & Private</h2>
             <p className="text-gray-600 mt-2">Your data stays yours – encrypted and safe.</p>
           </div>
@@ -42,7 +42,7 @@ export default async function Home() {
         <div className="mt-10 text-center">
           <a
             href="/dashboard"
-            className="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
+            className="inline-block px-6 py-3 bg-ctcColourSet-lavender text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition"
           >
             Go to Dashboard
           </a>

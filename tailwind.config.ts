@@ -74,10 +74,10 @@ const config = {
 				lavender: '#A689FF',
 
 				// vibrant colour set
-				redVib: '#FF4d6F',
+				redVib: '#FF4D6F',
 				orangeVib: '#FF6B54',
 				greenVib: '#00D3A9',
-				prupleVib: '#7055FD'
+				purpleVib: '#7055FD'
 			}
 
 
