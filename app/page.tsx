@@ -11,7 +11,7 @@ export default async function Home() {
     <main className="min-h-screen bg-gray-100 p-6 flex flex-col items-center">
       {/* Main Title Outside the Box */}
       <h1 className="text-5xl font-extrabold text-blue-700 mb-8 mt-6 text-center drop-shadow-sm">
-        CTC Wallet
+        CTC Wallet 
       </h1>
 
       {/* Inner Box */}
