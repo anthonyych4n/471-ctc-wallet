@@ -39,6 +39,8 @@ export default async function Home() {
           </div>
         </div>
 
+        {/* button (link) for User Dashboard */}
+
         <div className="mt-10 text-center space-x-4">
           <a
             href="/dashboard"
@@ -47,7 +49,7 @@ export default async function Home() {
             Go to  User Dashboard
           </a>
 
-          {/* button for admin dashboard */}
+          {/* button for admin dashboard  --- to be added later  */}
           <a
             href="/admin"
             className="inline-block px-6 py-3 bg-ctcColourSet-lavender text-white font-semibold rounded-lg shadow hover:bg-ctcColourSet-purpleVib transition ml-4"
