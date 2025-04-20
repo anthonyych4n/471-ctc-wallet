@@ -409,6 +409,11 @@ export function DataTable({
       defaultValue="outline"
       className="flex w-full flex-col justify-start gap-6"
     >
+      {/* Add a title at the top of the component */}
+      <h1 className="text-3xl font-bold text-black px-4 lg:px-6 pt-2">
+        Spending Analysis
+      </h1>
+      
       <div className="flex items-center justify-between px-4 lg:px-6">
         <Label htmlFor="view-selector" className="sr-only">
           View
