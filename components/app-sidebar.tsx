@@ -46,22 +46,22 @@ const data = {
       icon: LayoutDashboardIcon,
     },
     {
-      title: "Lifecycle",
+      title: "Budgets",
       url: "#",
       icon: ListIcon,
     },
     {
-      title: "Analytics",
+      title: "Saving Goals",
       url: "#",
       icon: BarChartIcon,
     },
     {
-      title: "Projects",
+      title: "Investments",
       url: "#",
       icon: FolderIcon,
     },
     {
-      title: "Team",
+      title: "Expenses",
       url: "#",
       icon: UsersIcon,
     },
@@ -162,7 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             >
               <a href="#">
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">CTC Wallet</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
