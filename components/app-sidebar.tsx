@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { usePathname } from "next/navigation"
 import {
   ArrowUpCircleIcon,
   BarChartIcon,
@@ -44,27 +45,27 @@ const data = {
       title: "Dashboard",
       url: "#",
       icon: LayoutDashboardIcon,
-    },
-    {
-      title: "Budgets",
-      url: "#",
-      icon: ListIcon,
-    },
-    {
-      title: "Saving Goals",
-      url: "#",
-      icon: BarChartIcon,
-    },
-    {
-      title: "Investments",
-      url: "#",
-      icon: FolderIcon,
-    },
-    {
-      title: "Expenses",
-      url: "#",
-      icon: UsersIcon,
-    },
+    }
+    // {
+    //   title: "Budgets",
+    //   url: "#",
+    //   icon: ListIcon,
+    // },
+    // {
+    //   title: "Saving Goals",
+    //   url: "#",
+    //   icon: BarChartIcon,
+    // },
+    // {
+    //   title: "Investments",
+    //   url: "#",
+    //   icon: FolderIcon,
+    // },
+    // {
+    //   title: "Expenses",
+    //   url: "#",
+    //   icon: UsersIcon,
+    // },
   ],
   navClouds: [
     {
@@ -131,26 +132,45 @@ const data = {
       icon: SearchIcon,
     },
   ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: DatabaseIcon,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: ClipboardListIcon,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: FileIcon,
-    },
-  ],
+  // documents: [
+    // {
+    //   name: "Data Library",
+    //   url: "#",
+    //   icon: DatabaseIcon,
+    // },
+    // {
+    //   name: "Reports",
+    //   url: "#",
+    //   icon: ClipboardListIcon,
+    // },
+    // {
+    //   name: "Word Assistant",
+    //   url: "#",
+    //   icon: FileIcon,
+    // },
+  // ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname()
+  
+  // checks which dashboard to redirect to based on current path by seeing if the pathname includes '/admin' or not
+  // if not, then it defaults to '/dashboard' for users
+  const dashboardUrl = pathname.includes('/admin') ? "/admin" : "/dashboard"
+  
+  // creating a dynamic data object with the correct dashboard URL
+  const sidebarData = {
+    ...data,
+    navMain: [
+      {
+        title: "Dashboard",
+        url: dashboardUrl, // dynamic URL based on current path
+        icon: LayoutDashboardIcon,
+      }
+      // 
+    ],
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -160,7 +180,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
+              <a href={dashboardUrl}>
                 <ArrowUpCircleIcon className="h-5 w-5" />
                 <span className="text-base font-semibold">CTC Wallet</span>
               </a>
@@ -169,12 +189,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        <NavMain items={sidebarData.navMain} />
+        {/* <NavDocuments items={data.documents} /> */}
+        <NavSecondary items={sidebarData.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={sidebarData.user} />
       </SidebarFooter>
     </Sidebar>
   )
