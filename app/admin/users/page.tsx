@@ -15,11 +15,11 @@ import { useState } from "react"
 
 // some mock data for users for now
 const initialUsers = [
-  { id: "placeholder-1", name: "John Doe", email: "john@example.com", role: "User", status: "Active", created: "2024-01-15" },
-  { id: "placeholder-2", name: "Jane Smith", email: "jane@example.com", role: "User", status: "Active", created: "2024-02-03" },
-  { id: "placeholder-3", name: "Admin User", email: "admin@example.com", role: "Admin", status: "Active", created: "2023-12-01" },
-  { id: "placeholder-4", name: "My King Lebron", email: "lebronovermj@example.com", role: "User", status: "Inactive", created: "2024-03-10" },
-  { id: "placeholder-5", name: "Ashton Hall", email: "ashall@example.com", role: "User", status: "Active", created: "2024-01-30" },
+  { id: "9754", name: "John Doe", email: "john@example.com", role: "User", status: "Active", created: "2024-01-15" },
+  { id: "2007", name: "Jane Smith", email: "jane@example.com", role: "User", status: "Active", created: "2024-02-03" },
+  { id: "4593", name: "Admin User", email: "admin@example.com", role: "Admin", status: "Active", created: "2023-12-01" },
+  { id: "3003", name: "My King Lebron", email: "lebronovermj@example.com", role: "User", status: "Inactive", created: "2024-03-10" },
+  { id: "7852", name: "Ashton Hall", email: "ashall@example.com", role: "User", status: "Active", created: "2024-01-30" },
 ];
 
 export default function UsersPage() {
@@ -30,7 +30,8 @@ export default function UsersPage() {
   // filter users based on search term
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   // delete user function
