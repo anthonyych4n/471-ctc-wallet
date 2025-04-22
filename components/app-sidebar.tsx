@@ -180,8 +180,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href={dashboardUrl}>
-                <ArrowUpCircleIcon className="h-5 w-5" />
+                <a href="/"> 
+                <img src="/logo.svg" alt="CTC logo" className="w-6 h-6"/>
                 <span className="text-base font-semibold">CTC Wallet</span>
               </a>
             </SidebarMenuButton>

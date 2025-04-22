@@ -163,12 +163,12 @@ export function ChartAreaInteractive() {
     <Card className="@container/card">
       <CardHeader className="relative">
         <CardTitle>Total Spending </CardTitle>
-        <CardDescription>
+        {/* <CardDescription>
           <span className="@[540px]/card:block hidden">
             Total for the last 3 months
           </span>
           <span className="@[540px]/card:hidden">Last 3 months</span>
-        </CardDescription>
+        </CardDescription> */}
         <div className="absolute right-4 top-4">
           {/* <ToggleGroup
             type="single"
