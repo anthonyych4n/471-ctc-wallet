@@ -45,7 +45,8 @@ const data = {
       title: "Dashboard",
       url: "#",
       icon: LayoutDashboardIcon,
-    }
+    },
+    
     // {
     //   title: "Budgets",
     //   url: "#",

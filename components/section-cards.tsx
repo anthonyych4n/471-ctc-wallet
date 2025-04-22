@@ -20,16 +20,11 @@ export function SectionCards() {
           </CardTitle>
           <CardDescription>Manage your connected accounts</CardDescription>
         </CardHeader>
-        <CardFooter className="flex flex-col gap-3 pt-2">
-          <a href="/accounts" className="w-full rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:bg-primary/90">
+        <CardFooter className="flex gap-3 pt-2 justify-start">
+          <a href="/accounts" className="md:w-1/6 w-full rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:bg-primary/90">
         View Financial Accounts
           </a>
-          <a href="/accounts/add" className="w-full rounded-md bg-secondary px-4 py-2 text-center text-sm font-medium text-secondary-foreground hover:bg-secondary/90">
-        Add Financial Accounts
-          </a>
-          <a href="/accounts/delete" className="w-full rounded-md border border-destructive bg-background px-4 py-2 text-center text-sm font-medium text-destructive hover:bg-destructive/10">
-        Delete Financial Accounts
-          </a>
+
         </CardFooter>
       </Card>
 
