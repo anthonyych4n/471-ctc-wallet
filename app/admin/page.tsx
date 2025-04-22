@@ -53,7 +53,7 @@ export default function AdminPage() {
                       </CardHeader>
                       <CardContent className="flex-grow flex items-end">
                         <Link 
-                          href="/admin/accounts"
+                          href="/admin/finAccManagement"
                           className="w-full text-center px-4 py-3 bg-ctcColourSet-purpleVib text-white rounded-md hover:bg-opacity-90 transition-colors text-lg"
                         >
                           Manage Accounts
