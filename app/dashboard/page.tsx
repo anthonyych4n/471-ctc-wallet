@@ -19,7 +19,7 @@ export default function Page() {
               <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
               </div>
-              <DataTable data={data} />
+              {/* <DataTable data={data} /> */}
               <SectionCards />
               {/* <DataTable data={data} /> */}
             </div>
