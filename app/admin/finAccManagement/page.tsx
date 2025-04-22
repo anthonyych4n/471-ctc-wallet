@@ -15,8 +15,8 @@ import { useState } from "react"
 
 // some mock data for users for now
 const initialUsers = [
-        { id: "placeholder-1", name: "John Doe", email: "john@example.com", financialAccount: "Credit Card" },
-        { id: "placeholder-2", name: "Jane Smith", email: "jane@example.com", financialAccount: "Savings Account" },
+        { id: "123456", name: "John Doe", email: "john@example.com", financialAccount: "Credit Card" },
+        { id: "123457", name: "Jane Smith", email: "jane@example.com", financialAccount: "Savings Account" },
         { id: "placeholder-3", name: "Admin User", email: "admin@example.com", financialAccount: "Checking Account" },
         { id: "placeholder-4", name: "My King Lebron", email: "lebronovermj@example.com", financialAccount: "HFSA" },
         { id: "placeholder-5", name: "Ashton Hall", email: "ashall@example.com", financialAccount: "TFSA" },
@@ -30,7 +30,8 @@ export default function FinAccPage() {
   // filter users based on search term
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   // delete user function
