@@ -1,8 +1,6 @@
 "use client"
 
-import * as React from "react"
 import { Badge } from "@/components/ui/badge"
-import { useIsMobile } from "../hooks/use-mobile"
 import {
   Card,
   CardContent,
@@ -10,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -25,8 +24,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Search, PieChart } from "lucide-react"
+import { PieChart, Search } from "lucide-react"
+import * as React from "react"
+import { useIsMobile } from "../hooks/use-mobile"
 
 // transaction categories with colors
 const categories = {
@@ -76,7 +76,11 @@ const transactionData = [
   { id: "T030", date: "2024-05-01", description: "Paycheck", amount: 2400, type: "Income", category: "Income", account: "Checking" },
 ]
 
-export function ChartAreaInteractive() {
+interface ChartAreaInteractiveProps {
+  accounts: any[];
+}
+
+export function ChartAreaInteractive({ accounts }: ChartAreaInteractiveProps) {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("30d")
   const [searchTerm, setSearchTerm] = React.useState("")
@@ -105,15 +109,15 @@ export function ChartAreaInteractive() {
 
   // filter by search term and category
   const filteredTransactions = dateFilteredTransactions.filter((transaction) => {
-    const matchesSearch = 
-      searchTerm === "" || 
+    const matchesSearch =
+      searchTerm === "" ||
       transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
       transaction.category.toLowerCase().includes(searchTerm.toLowerCase())
-    
-    const matchesCategory = 
-      categoryFilter === "All" || 
+
+    const matchesCategory =
+      categoryFilter === "All" ||
       transaction.category === categoryFilter
-    
+
     return matchesSearch && matchesCategory
   })
 
@@ -244,9 +248,8 @@ export function ChartAreaInteractive() {
                             {transaction.category}
                           </Badge>
                         </TableCell>
-                        <TableCell className={`text-right font-medium ${
-                          transaction.amount < 0 ? 'text-red-600' : 'text-green-600'
-                        }`}>
+                        <TableCell className={`text-right font-medium ${transaction.amount < 0 ? 'text-red-600' : 'text-green-600'
+                          }`}>
                           ${transaction.amount.toFixed(2)}
                         </TableCell>
                       </TableRow>

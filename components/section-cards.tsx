@@ -1,4 +1,5 @@
-import { TrendingDownIcon, TrendingUpIcon } from "lucide-react"
+import { TrendingUpIcon } from "lucide-react"
+import React from "react"
 
 import { Badge } from "@/components/ui/badge"
 import {
@@ -8,21 +9,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useIsMobile } from "@/hooks/use-is-mobile"
 
-export function SectionCards() {
+interface SectionCardsProps {
+  accounts: any[];
+  savingsGoals: any[];
+  recurringExpenses: any[];
+  alerts: any[];
+}
+
+export function SectionCards({ accounts }: SectionCardsProps) {
+  const isMobile = useIsMobile()
+  const [searchTerm, setSearchTerm] = React.useState("")
+  const [categoryFilter, setCategoryFilter] = React.useState("All")
+
   return (
     <div className="*:data-[slot=card]:shadow-xs @xl/main:grid-cols-2 @5xl/main:grid-cols-4 grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card lg:px-6">
       {/* Card 1 --> Account Aggregation */}
       <Card className="@container/card">
         <CardHeader>
           <CardTitle className="text-xl font-semibold">
-        Financial Accounts
+            Financial Accounts
           </CardTitle>
           <CardDescription>Manage your connected accounts</CardDescription>
         </CardHeader>
         <CardFooter className="flex gap-3 pt-2 justify-start">
           <a href="/accounts" className="md:w-1/6 w-full rounded-md bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground hover:bg-primary/90">
-        View Financial Accounts
+            View Financial Accounts
           </a>
 
         </CardFooter>
