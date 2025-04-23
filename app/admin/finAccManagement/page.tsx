@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react"; // Use React import
+import * as React from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -24,10 +24,10 @@ type AccountType = 'Debit' | 'Credit' | 'TFSA' | 'FHSA';
 
 interface Account {
   id: string;
-  user_id: string; // Keep user_id for structure consistency
+  user_id: string;
   type: AccountType;
   balance: number;
-  created_at: string; // Keep created_at for structure consistency
+  created_at: string;
 }
 
 // Mock data for initial accounts
@@ -37,35 +37,40 @@ const initialAccounts: Account[] = [
   { id: "acc-3", user_id: "user-1", type: "TFSA", balance: 12000.00, created_at: new Date().toISOString() },
 ];
 
-// --- AddAccountSheet Component (Manages Form and Calls Callback) ---
+// --- AddAccountSheet Component (Remains the same) ---
 const AddAccountSheet = ({ onAccountAdded }: { onAccountAdded: (newAccount: Account) => void }) => {
-  const [formData, setFormData] = React.useState<{ accountType: AccountType; balance: number }>({
-    accountType: 'Debit', // Default type
-    balance: 0,
+  const [formData, setFormData] = React.useState<{ accountType: AccountType; balance: number | string }>({
+    accountType: 'Debit',
+    balance: '',
   });
   const [isOpen, setIsOpen] = React.useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Create a new account object with a simple unique ID
+    const finalBalance = parseFloat(String(formData.balance)) || 0;
     const newAccount: Account = {
-      id: `acc-${Date.now()}`, // Simple unique ID based on timestamp
-      user_id: `user-${Math.floor(Math.random() * 10)}`, // Mock user ID
+      id: `acc-${Date.now()}`,
+      user_id: `user-${Math.floor(Math.random() * 10)}`,
       type: formData.accountType,
-      balance: formData.balance,
+      balance: finalBalance,
       created_at: new Date().toISOString(),
     };
+    onAccountAdded(newAccount);
+    console.log("Account added locally:", newAccount);
+    setFormData({ accountType: 'Debit', balance: '' });
+    setIsOpen(false);
+  };
 
-    onAccountAdded(newAccount); // Pass the new account object up to the parent
-    console.log("Account added locally:", newAccount); // Log instead of toast
-    setFormData({ accountType: 'Debit', balance: 0 }); // Reset form
-    setIsOpen(false); // Close the sheet
+  const handleBalanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setFormData({ ...formData, balance: value });
+    }
   };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
-        {/* This button opens the sheet */}
         <Button className="bg-ctcColourSet-purpleVib hover:bg-opacity-90">
           <PlusIcon className="h-4 w-4 mr-2" />
           Add New Account
@@ -78,20 +83,18 @@ const AddAccountSheet = ({ onAccountAdded }: { onAccountAdded: (newAccount: Acco
             Enter the details for the new financial account.
           </SheetDescription>
         </SheetHeader>
-        {/* Form inside the sheet */}
         <form onSubmit={handleSubmit} className="space-y-6 mt-4">
           <div className="space-y-4">
-            {/* Account Type Selection */}
             <div>
-              <Label htmlFor="accountType">Account Type</Label>
+              <Label htmlFor="add-accountType">Account Type</Label>
               <Select
                 value={formData.accountType}
                 onValueChange={(value: AccountType) =>
                   setFormData({ ...formData, accountType: value })
                 }
-                required // Make field required
+                required
               >
-                <SelectTrigger id="accountType">
+                <SelectTrigger id="add-accountType">
                   <SelectValue placeholder="Select account type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -102,33 +105,28 @@ const AddAccountSheet = ({ onAccountAdded }: { onAccountAdded: (newAccount: Acco
                 </SelectContent>
               </Select>
             </div>
-            {/* Initial Balance Input */}
             <div>
-              <Label htmlFor="balance">Initial Balance</Label>
+              <Label htmlFor="add-balance">Initial Balance</Label>
               <div className="relative mt-1.5">
                 <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
                 <Input
-                  id="balance"
-                  type="number"
-                  step="0.01" // Allow decimals
+                  id="add-balance"
+                  type="text"
+                  inputMode="decimal"
                   value={formData.balance}
-                  onChange={(e) => setFormData({ ...formData, balance: parseFloat(e.target.value) || 0 })}
+                  onChange={handleBalanceChange}
                   className="pl-6"
                   placeholder="0.00"
-                  required // Make field required
+                  required
                 />
               </div>
             </div>
           </div>
-          {/* Sheet Footer with Buttons */}
           <SheetFooter>
             <SheetClose asChild>
               <Button variant="outline" type="button">Cancel</Button>
             </SheetClose>
-            <Button
-              type="submit"
-              className="bg-ctcColourSet-purpleVib"
-            >
+            <Button type="submit" className="bg-ctcColourSet-purpleVib">
               Create Account
             </Button>
           </SheetFooter>
@@ -138,43 +136,171 @@ const AddAccountSheet = ({ onAccountAdded }: { onAccountAdded: (newAccount: Acco
   );
 };
 
-// --- Main Page Component ---
-export default function FinAccPage() {
-  // State to hold the list of accounts, initialized with mock data
-  const [accounts, setAccounts] = React.useState<Account[]>(initialAccounts);
-  const [searchTerm, setSearchTerm] = React.useState("");
+// --- EditAccountSheet Component (New) ---
+interface EditAccountSheetProps {
+  account: Account | null; // Account being edited
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onAccountUpdated: (updatedAccount: Account) => void;
+}
 
-  // Filter accounts based on search term (using local state)
-  const filteredAccounts = React.useMemo(() => {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    // Filter the 'accounts' state
-    return accounts.filter(acc =>
-      acc.id.toLowerCase().includes(lowerSearchTerm) ||
-      acc.type.toLowerCase().includes(lowerSearchTerm) ||
-      acc.user_id.toLowerCase().includes(lowerSearchTerm) // Or filter by other relevant fields
-    );
-  }, [accounts, searchTerm]); // Re-filter when accounts list or search term changes
+const EditAccountSheet = ({ account, isOpen, onOpenChange, onAccountUpdated }: EditAccountSheetProps) => {
+  // State for the form data within the edit sheet
+  const [formData, setFormData] = React.useState<{ accountType: AccountType; balance: number | string }>({
+    accountType: 'Debit', // Default
+    balance: '',
+  });
 
-  // --- Action Handlers (Modify Local State) ---
+  // Effect to update form data when the account prop changes (sheet opens)
+  React.useEffect(() => {
+    if (account) {
+      setFormData({
+        accountType: account.type,
+        balance: account.balance, // Keep as number initially
+      });
+    } else {
+      // Reset form if account becomes null (sheet closes unexpectedly)
+      setFormData({ accountType: 'Debit', balance: '' });
+    }
+  }, [account, isOpen]); // Depend on account and isOpen
 
-  // Function to add a new account to the local state
-  const handleAccountAdded = (newAccount: Account) => {
-    setAccounts(prevAccounts => [...prevAccounts, newAccount]); // Add the new account to the existing array
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!account) return; // Should not happen if sheet is open correctly
+
+    const finalBalance = parseFloat(String(formData.balance)) || 0;
+
+    // Create the updated account object, keeping original ID, user_id, created_at
+    const updatedAccount: Account = {
+      ...account, // Spread original account data
+      type: formData.accountType, // Update type
+      balance: finalBalance, // Update balance
+    };
+
+    onAccountUpdated(updatedAccount); // Pass the updated account object up
+    console.log("Account updated locally:", updatedAccount);
+    onOpenChange(false); // Close the sheet
   };
 
-  // Delete account function (modifies local state)
-  const handleDeleteAccount = (accountId: string) => {
-    if (confirm("Are you sure you want to remove this account from the list?")) {
-      setAccounts(prevAccounts => prevAccounts.filter(acc => acc.id !== accountId));
-      console.log(`Removed account with ID: ${accountId}`); // Log instead of toast
+  // Re-use balance change handler
+  const handleBalanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setFormData({ ...formData, balance: value });
     }
   };
 
-  // Edit account function (placeholder)
-  const handleEditAccount = (accountId: string) => {
-    // For now, just log. Later, you could open a modal/sheet prefilled with data.
-    console.log(`Edit account with ID: ${accountId}`);
-    // Removed toast call
+  // Don't render the sheet if no account is selected
+  if (!account) return null;
+
+  return (
+    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="sm:max-w-md">
+        <SheetHeader>
+          <SheetTitle>Edit Account</SheetTitle>
+          <SheetDescription>
+            Modify the details for account ID: {account.id.substring(0, 8)}...
+          </SheetDescription>
+        </SheetHeader>
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-accountType">Account Type</Label>
+              <Select
+                value={formData.accountType}
+                onValueChange={(value: AccountType) =>
+                  setFormData({ ...formData, accountType: value })
+                }
+                required
+              >
+                <SelectTrigger id="edit-accountType">
+                  <SelectValue placeholder="Select account type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Debit">Debit Card</SelectItem>
+                  <SelectItem value="Credit">Credit Card</SelectItem>
+                  <SelectItem value="TFSA">TFSA</SelectItem>
+                  <SelectItem value="FHSA">FHSA</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="edit-balance">Balance</Label>
+              <div className="relative mt-1.5">
+                <span className="absolute left-3 top-2.5 text-muted-foreground">$</span>
+                <Input
+                  id="edit-balance"
+                  type="text"
+                  inputMode="decimal"
+                  value={formData.balance} // Use state value
+                  onChange={handleBalanceChange}
+                  className="pl-6"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button variant="outline" type="button" onClick={() => onOpenChange(false)}>Cancel</Button>
+            </SheetClose>
+            <Button type="submit" className="bg-ctcColourSet-purpleVib">
+              Save Changes
+            </Button>
+          </SheetFooter>
+        </form>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+
+// --- Main Page Component ---
+export default function FinAccPage() {
+  const [accounts, setAccounts] = React.useState<Account[]>(initialAccounts);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  // State for managing the edit sheet
+  const [editingAccount, setEditingAccount] = React.useState<Account | null>(null);
+  const [isEditSheetOpen, setIsEditSheetOpen] = React.useState(false);
+
+
+  const filteredAccounts = React.useMemo(() => {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    return accounts.filter(acc =>
+      acc.id.toLowerCase().includes(lowerSearchTerm) ||
+      acc.type.toLowerCase().includes(lowerSearchTerm) ||
+      acc.user_id.toLowerCase().includes(lowerSearchTerm)
+    );
+  }, [accounts, searchTerm]);
+
+  // --- Action Handlers ---
+  const handleAccountAdded = (newAccount: Account) => {
+    setAccounts(prevAccounts => [...prevAccounts, newAccount]);
+  };
+
+  const handleDeleteAccount = (accountId: string) => {
+    if (confirm("Are you sure you want to remove this account from the list?")) {
+      setAccounts(prevAccounts => prevAccounts.filter(acc => acc.id !== accountId));
+      console.log(`Removed account with ID: ${accountId}`);
+    }
+  };
+
+  // Open edit sheet and set the account to edit
+  const handleEditAccountClick = (account: Account) => {
+    setEditingAccount(account); // Set the account to be edited
+    setIsEditSheetOpen(true); // Open the sheet
+  };
+
+  // Update the account in the main list
+  const handleUpdateAccount = (updatedAccount: Account) => {
+    setAccounts(prevAccounts =>
+      prevAccounts.map(acc =>
+        acc.id === updatedAccount.id ? updatedAccount : acc // Find and replace
+      )
+    );
+    setEditingAccount(null); // Clear editing state
+    // Sheet closing is handled by its own onOpenChange
   };
 
   // --- Render Logic ---
@@ -190,8 +316,7 @@ export default function FinAccPage() {
                 <Card>
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-2xl font-bold">Financial Account Management</CardTitle>
-                      {/* Render the AddAccountSheet and pass the handler */}
+                      <CardTitle className="text-2xl font-bold">Financial Account Management (Local)</CardTitle>
                       <AddAccountSheet onAccountAdded={handleAccountAdded} />
                     </div>
                   </CardHeader>
@@ -210,7 +335,7 @@ export default function FinAccPage() {
                       </div>
                     </div>
 
-                    {/* Table displays data from local 'filteredAccounts' */}
+                    {/* Table */}
                     <div className="rounded-md border">
                       <Table>
                         <TableHeader>
@@ -229,7 +354,6 @@ export default function FinAccPage() {
                               <TableRow key={account.id}>
                                 <TableCell className="font-mono text-xs">{account.id.substring(0, 8)}...</TableCell>
                                 <TableCell>
-                                  {/* Style based on type */}
                                   <span className={`px-2 py-1 rounded-full text-xs ${
                                       account.type === 'Credit' ? 'bg-red-100 text-red-800' :
                                       account.type === 'Debit' ? 'bg-blue-100 text-blue-800' :
@@ -244,11 +368,11 @@ export default function FinAccPage() {
                                 <TableCell className="font-mono text-xs">{account.user_id.substring(0, 8)}...</TableCell>
                                 <TableCell>{new Date(account.created_at).toLocaleDateString()}</TableCell>
                                 <TableCell className="text-right">
-                                  {/* Buttons call local state handlers */}
+                                  {/* Update onClick for Edit Button */}
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => handleEditAccount(account.id)}
+                                    onClick={() => handleEditAccountClick(account)} // Pass the specific account
                                     title="Edit account"
                                   >
                                     <PencilIcon className="h-4 w-4" />
@@ -286,6 +410,13 @@ export default function FinAccPage() {
             </div>
           </div>
         </div>
+        {/* Render the Edit Sheet */}
+        <EditAccountSheet
+          account={editingAccount}
+          isOpen={isEditSheetOpen}
+          onOpenChange={setIsEditSheetOpen} // Control opening/closing
+          onAccountUpdated={handleUpdateAccount} // Pass the update handler
+        />
       </SidebarInset>
     </SidebarProvider>
   );
