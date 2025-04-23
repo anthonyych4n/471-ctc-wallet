@@ -11,7 +11,6 @@ import {
   GlobeIcon,
   InputIcon,
 } from "@radix-ui/react-icons";
-import { BoxReveal } from "@/components/magicui/box-reveal";
 
 const features = [
   {
@@ -69,52 +68,32 @@ export default async function Home() {
 
   <main className="h-1/2 bg-white text-ctcColourSet-purpleVib flex flex-col items-center px-6 pt-20 pb-24">
     {/* Main Title */}
-    <BoxReveal boxColor="#BAFBE4">
       <h1 className="text-6xl md:text-7xl font-semibold text-center leading-tight tracking-tight max-w-4xl">
         CTC Wallet
       </h1>
-    </BoxReveal>
 
     {/* Subtitle */}
-    <BoxReveal boxColor="#BAFBE4">
       <p className="text-xl md:text-2xl text-center text-gray-700 mt-6 max-w-2xl">
         Take control of your money. Track spending, plan budgets, and view insights – all in one beautiful app.
       </p>
-    </BoxReveal>
 
     {/* Features Section */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-20 max-w-5xl w-full">
       <div>
-        <BoxReveal boxColor="#BAFBE4">
         <h2 className="text-2xl font-medium">Track Expenses</h2>
-        </BoxReveal>
-        <BoxReveal boxColor="#BAFBE4">
         <p className="text-gray-600 mt-2">Add, view, and categorize your expenses seamlessly.</p>
-        </BoxReveal>
       </div>
       <div>
-        <BoxReveal boxColor="#BAFBE4">
         <h2 className="text-2xl font-medium">View Analytics</h2>
-        </BoxReveal>
-        <BoxReveal boxColor="#BAFBE4">
         <p className="text-gray-600 mt-2">Visualize your spending trends and financial health.</p>
-        </BoxReveal>
       </div>
       <div>
-        <BoxReveal boxColor="#BAFBE4">
         <h2 className="text-2xl font-medium">Budget Planning</h2>
-        </BoxReveal>
-        <BoxReveal boxColor="#BAFBE4">
         <p className="text-gray-600 mt-2">Set monthly budgets and monitor your progress with ease.</p>
-        </BoxReveal>
       </div>
       <div>
-        <BoxReveal boxColor="#BAFBE4">
         <h2 className="text-2xl font-medium">Secure & Private</h2>
-        </BoxReveal>
-        <BoxReveal boxColor="#BAFBE4">
         <p className="text-gray-600 mt-2">All your data is encrypted and remains on your device.</p>
-        </BoxReveal>
       </div>
     </div>
 
