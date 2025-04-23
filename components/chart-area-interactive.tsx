@@ -119,13 +119,13 @@ export function ChartAreaInteractive() {
 
   // this helps calculate the total expenses by category
   // and the total expenses overall
-  const categoryTotals = dateFilteredTransactions.reduce((acc, transaction) => {
+  const categoryTotals = dateFilteredTransactions.reduce((acc: Record<string, number>, transaction) => {
     if (transaction.type === "Expense") {
       const absAmount = Math.abs(transaction.amount)
       acc[transaction.category] = (acc[transaction.category] || 0) + absAmount
     }
     return acc
-  }, {})
+  }, {} as Record<string, number>)
 
   // calculate total expenses
   const totalExpenses = Object.values(categoryTotals).reduce((sum: any, amount: any) => sum + amount, 0)
@@ -170,7 +170,7 @@ export function ChartAreaInteractive() {
               {Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]).map(([category, total]) => (
                 <div key={category} className="flex justify-between items-center">
                   <div className="flex items-center">
-                    <div className={`w-2 h-2 rounded-full ${categories[category].color.split(" ")[0]} mr-2`}></div>
+                    <div className={`w-2 h-2 rounded-full ${categories[category as keyof typeof categories].color.split(" ")[0]} mr-2`}></div>
                     <span className="text-sm">{category}</span>
                   </div>
                   <div className="flex items-center">
@@ -240,7 +240,7 @@ export function ChartAreaInteractive() {
                         </TableCell>
                         <TableCell>{transaction.description}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className={`${categories[transaction.category].color}`}>
+                          <Badge variant="outline" className={`${categories[transaction.category as keyof typeof categories].color}`}>
                             {transaction.category}
                           </Badge>
                         </TableCell>
