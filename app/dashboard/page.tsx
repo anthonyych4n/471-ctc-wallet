@@ -120,7 +120,6 @@ export default function DashboardPage() {
                 <DataTable data={data.accounts} />
                 <SectionCards
                   accounts={data.accounts}
-                  investments={data.investments}
                   savingsGoals={data.savingsGoals}
                   recurringExpenses={data.recurringExpenses}
                   alerts={data.alerts}

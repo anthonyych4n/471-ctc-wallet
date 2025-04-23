@@ -1,68 +1,112 @@
-import { supabase } from '@/utils/supabase';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const userId = searchParams.get('userId');
+    const supabase = createRouteHandlerClient({ cookies });
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
 
-        if (!userId) {
-            return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
-        }
-
-        const { data: goals, error } = await supabase
-            .from('savings_goals')
-            .select('*')
-            .eq('user_id', userId);
-
-        if (error) throw error;
-        return NextResponse.json(goals);
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to fetch savings goals' }, { status: 500 });
+    if (!userId) {
+        return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
+
+    const { data, error } = await supabase
+        .from('savings_goals')
+        .select('*')
+        .eq('user_id', userId);
+
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data);
 }
 
 export async function POST(request: Request) {
-    try {
-        const body = await request.json();
-        const { data: goal, error } = await supabase
-            .from('savings_goals')
-            .insert([
-                {
-                    user_id: body.userId,
-                    deadline: new Date(body.deadline).toISOString(),
-                    name: body.name,
-                    target_amount: body.targetAmount,
-                    current_amount: body.currentAmount || 0,
-                    status: body.status,
-                }
-            ])
-            .select()
-            .single();
+    const supabase = createRouteHandlerClient({ cookies });
+    const { name, target_amount, current_amount, target_date } = await request.json();
 
-        if (error) throw error;
-        return NextResponse.json(goal);
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to create savings goal' }, { status: 500 });
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { data, error } = await supabase
+        .from('savings_goals')
+        .insert([
+            {
+                user_id: user.id,
+                name,
+                target_amount,
+                current_amount,
+                target_date,
+            },
+        ])
+        .select();
+
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data[0]);
 }
 
-export async function PATCH(request: Request) {
-    try {
-        const body = await request.json();
-        const { data: goal, error } = await supabase
-            .from('savings_goals')
-            .update({
-                current_amount: body.currentAmount,
-                status: body.status,
-            })
-            .eq('id', body.id)
-            .select()
-            .single();
+export async function PUT(request: Request) {
+    const supabase = createRouteHandlerClient({ cookies });
+    const { id, name, target_amount, current_amount, target_date } = await request.json();
 
-        if (error) throw error;
-        return NextResponse.json(goal);
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to update savings goal' }, { status: 500 });
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    const { data, error } = await supabase
+        .from('savings_goals')
+        .update({
+            name,
+            target_amount,
+            current_amount,
+            target_date,
+            updated_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .select();
+
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(data[0]);
+}
+
+export async function DELETE(request: Request) {
+    const supabase = createRouteHandlerClient({ cookies });
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+        return NextResponse.json({ error: 'Goal ID is required' }, { status: 400 });
+    }
+
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { error } = await supabase
+        .from('savings_goals')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
+
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
 } 
