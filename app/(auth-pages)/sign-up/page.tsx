@@ -1,11 +1,10 @@
 "use client";
 
-import { createClient } from "@/utils/supabase/client";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -14,7 +13,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const supabase = createClient();
+  const supabase = createClientComponentClient();
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -29,24 +28,27 @@ export default function SignUp() {
     }
 
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
-            name: name,
+            name: name, // Include name in the user metadata
           },
         },
       });
 
-      if (signUpError) throw signUpError;
+      if (error) throw error;
 
-      toast.success("Account created successfully! Please sign in.");
-      router.push("/sign-in");
-    } catch (error: any) {
-      console.error("Sign up error:", error);
-      setError(error.message || "Failed to create account. Please try again.");
+      
+       // Show success message or redirect based on your flow
+       // For email confirmation flow:
+       router.push("/sign-up/confirmation");
+       // Or direct login flow:
+       // router.push("/dashboard");
+     } catch (error) {
+       setError("Failed to create account. Please try again.");
     } finally {
       setLoading(false);
     }
