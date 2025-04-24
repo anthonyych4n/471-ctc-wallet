@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignUp() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const supabase = createClientComponentClient();
@@ -20,7 +21,7 @@ export default function SignUp() {
     setLoading(true);
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setLoading(false);
       return;
     }
@@ -35,18 +36,31 @@ export default function SignUp() {
       });
 
       if (error) throw error;
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error) {
-      setError('Failed to create account. Please try again.');
+      setError("Failed to create account. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md mx-auto px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-sm p-8">
+          {/* Logo at the top */}
+          <div className="flex justify-center mb-6">
+            <Link href="/">
+              <Image
+                src="/logo.svg"
+                alt="Logo"
+                width={40}
+                height={40}
+                className="hover:opacity-90 transition-opacity cursor-pointer"
+              />
+            </Link>
+          </div>
+
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-gray-900">
               Create your account
@@ -114,7 +128,7 @@ export default function SignUp() {
                 disabled={loading}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               >
-                {loading ? 'Creating account...' : 'Sign up'}
+                {loading ? "Creating account..." : "Sign up"}
               </button>
             </div>
 

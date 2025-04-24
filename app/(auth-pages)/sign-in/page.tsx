@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const supabase = createClientComponentClient();
@@ -25,18 +25,25 @@ export default function SignIn() {
       });
 
       if (error) throw error;
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (error) {
-      setError('Invalid email or password');
+      setError("Invalid email or password");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-md mx-auto px-4">
+    <div className="flex min-h-screen min-w-full items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md space-y-8">
         <div className="bg-white rounded-lg shadow-sm p-8">
+          {/* Logo at the top */}
+          <div className="flex justify-center mb-6">
+            <Link href="/">
+              <img src="/public/logo.svg" alt="Logo" className="w-10 h-10" />
+            </Link>
+          </div>
+
           <div className="text-center">
             <h2 className="text-3xl font-extrabold text-gray-900">
               Sign in to your account
@@ -88,7 +95,7 @@ export default function SignIn() {
                 disabled={loading}
                 className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
               >
-                {loading ? 'Signing in...' : 'Sign in'}
+                {loading ? "Signing in..." : "Sign in"}
               </button>
             </div>
 
