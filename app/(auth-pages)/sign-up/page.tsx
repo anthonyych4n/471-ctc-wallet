@@ -1,10 +1,11 @@
 "use client";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createClient } from "@/utils/supabase/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -13,7 +14,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const supabase = createClientComponentClient();
+  const supabase = createClient();
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -28,26 +29,24 @@ export default function SignUp() {
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
-            name: name, // Include name in the user metadata
+            name: name,
           },
         },
       });
 
-      if (error) throw error;
+      if (signUpError) throw signUpError;
 
-      // Show success message or redirect based on your flow
-      // For email confirmation flow:
-      router.push("/sign-up/confirmation");
-      // Or direct login flow:
-      // router.push("/dashboard");
-    } catch (error) {
-      setError("Failed to create account. Please try again.");
+      toast.success("Account created successfully! Please sign in.");
+      router.push("/sign-in");
+    } catch (error: any) {
+      console.error("Sign up error:", error);
+      setError(error.message || "Failed to create account. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -57,7 +56,6 @@ export default function SignUp() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-sm p-8">
-          {/* Logo at the top */}
           <div className="flex justify-center mb-6">
             <Link href="/">
               <Image
@@ -77,7 +75,6 @@ export default function SignUp() {
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
             <div className="rounded-md shadow-sm -space-y-px">
-              {/* Add name input field */}
               <div>
                 <label htmlFor="name" className="sr-only">
                   Name
@@ -95,7 +92,6 @@ export default function SignUp() {
                 />
               </div>
 
-              {/* Existing email field */}
               <div>
                 <label htmlFor="email-address" className="sr-only">
                   Email address
