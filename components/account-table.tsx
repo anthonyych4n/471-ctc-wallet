@@ -88,6 +88,11 @@ export function DataTable() {
 
   const handleAddAccount = async (data: AccountFormValues) => {
     try {
+      console.log("Sending account data:", {
+        type: data.type,
+        balance: Number(data.balance),
+      });
+
       const response = await fetch("/api/accounts", {
         method: "POST",
         headers: {
@@ -99,7 +104,29 @@ export function DataTable() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to add account");
+      // Enhanced error handling
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server response:", {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText,
+        });
+
+        let errorMessage = "Failed to add account";
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch (e) {
+          if (errorText) {
+            errorMessage = errorText;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
 
       const newAccount = await response.json();
       setAccounts((prev) => [...prev, newAccount]);
@@ -108,7 +135,9 @@ export function DataTable() {
       form.reset();
     } catch (error) {
       console.error("Error adding account:", error);
-      toast.error("Failed to add account");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to add account"
+      );
     }
   };
 
@@ -141,6 +170,65 @@ export function DataTable() {
       balance: account.balance.toString(),
     });
     setIsAddAccountOpen(true);
+  };
+
+  const handleUpdateAccount = async (data: AccountFormValues) => {
+    if (!editingAccount) return;
+
+    try {
+      const response = await fetch("/api/accounts", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: editingAccount.id,
+          type: data.type,
+          balance: Number(data.balance),
+        }),
+      });
+
+      // Enhanced error handling
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Server response:", {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText,
+        });
+
+        let errorMessage = "Failed to update account";
+        try {
+          const errorData = JSON.parse(errorText);
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch (e) {
+          if (errorText) {
+            errorMessage = errorText;
+          }
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      const updatedAccount = await response.json();
+      setAccounts((prev) =>
+        prev.map((account) =>
+          account.id === editingAccount.id ? updatedAccount : account
+        )
+      );
+
+      toast.success("Account updated successfully");
+      setIsAddAccountOpen(false);
+      setEditingAccount(null);
+      form.reset();
+    } catch (error) {
+      console.error("Error updating account:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update account"
+      );
+    }
   };
 
   return (
