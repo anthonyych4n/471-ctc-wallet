@@ -171,4 +171,30 @@ CREATE TRIGGER update_users_updated_at
 CREATE TRIGGER update_financial_accounts_updated_at
     BEFORE UPDATE ON financial_accounts
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column(); 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- Create a trigger to automatically add new users to the users table when they sign up
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.users (id, name, email, password_hash)
+  VALUES (
+    new.id, 
+    coalesce(new.raw_user_meta_data->>'name', new.email), 
+    new.email,
+    'managed_by_supabase_auth'
+  );
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger the function every time a user is created
+CREATE OR REPLACE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Modify users table to work with Supabase Auth
+ALTER TABLE users DROP COLUMN id CASCADE;
+ALTER TABLE users ADD COLUMN id UUID PRIMARY KEY DEFAULT uuid_generate_v4();
+ALTER TABLE users ALTER COLUMN password_hash DROP NOT NULL; -- Since Supabase handles this
+ALTER TABLE users ALTER COLUMN name DROP NOT NULL; -- Make optional initially

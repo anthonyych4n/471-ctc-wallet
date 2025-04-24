@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function SignUp() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -27,16 +28,24 @@ export default function SignUp() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            name: name, // Include name in the user metadata
+          },
         },
       });
 
       if (error) throw error;
-      router.push("/dashboard");
+
+      // Show success message or redirect based on your flow
+      // For email confirmation flow:
+      router.push("/sign-up/confirmation");
+      // Or direct login flow:
+      // router.push("/dashboard");
     } catch (error) {
       setError("Failed to create account. Please try again.");
     } finally {
@@ -68,6 +77,25 @@ export default function SignUp() {
           </div>
           <form className="mt-8 space-y-6" onSubmit={handleSignUp}>
             <div className="rounded-md shadow-sm -space-y-px">
+              {/* Add name input field */}
+              <div>
+                <label htmlFor="name" className="sr-only">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  required
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  placeholder="Full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              {/* Existing email field */}
               <div>
                 <label htmlFor="email-address" className="sr-only">
                   Email address
@@ -78,12 +106,13 @@ export default function SignUp() {
                   type="email"
                   autoComplete="email"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
+
               <div>
                 <label htmlFor="password" className="sr-only">
                   Password
