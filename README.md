@@ -1,6 +1,6 @@
 
 # CPSC 471 Final project
-
+More information about how to run the web app is on the write up!
 
 ## Features
 
