@@ -11,8 +11,8 @@ import {
 const features = [
   {
     Icon: FileTextIcon,
-    name: "Change these and we can add videos of the dashboard to these cards later :)",
-    description: "We automatically save your files as you type.",
+    name: "Create several finacial accounts and track them.",
+    description: "We automatically save your accounts and balances.",
     href: "/",
     cta: "Learn more",
     background: <img className="absolute -right-20 -top-20 opacity-60" />,
